@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/ceramics-shop/static/css/main.ad4bbdcc.css",
-    "main.js": "/ceramics-shop/static/js/main.10fb5d36.js",
+    "main.js": "/ceramics-shop/static/js/main.29b53288.js",
     "static/js/453.28dba103.chunk.js": "/ceramics-shop/static/js/453.28dba103.chunk.js",
     "index.html": "/ceramics-shop/index.html",
     "main.ad4bbdcc.css.map": "/ceramics-shop/static/css/main.ad4bbdcc.css.map",
-    "main.10fb5d36.js.map": "/ceramics-shop/static/js/main.10fb5d36.js.map",
+    "main.29b53288.js.map": "/ceramics-shop/static/js/main.29b53288.js.map",
     "453.28dba103.chunk.js.map": "/ceramics-shop/static/js/453.28dba103.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.ad4bbdcc.css",
-    "static/js/main.10fb5d36.js"
+    "static/js/main.29b53288.js"
   ]
 }
