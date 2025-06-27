@@ -2,7 +2,7 @@
   "name": "ceramics-shop",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://dhumeniuk.github.io/ceramics-shop",
+  "homepage": "https://dhumeniuk.github.io",
   "dependencies": {
     "@stripe/react-stripe-js": "^3.7.0",
     "@stripe/stripe-js": "^7.4.0",
