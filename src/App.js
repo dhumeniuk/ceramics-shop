@@ -1,14 +1,12 @@
 import React, { useContext } from 'react';
 import { HashRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import { CartContext } from './context/CartContext';
-import { ErrorContext } from './context/ErrorContext';
 import Home from './pages/Home';
 import Checkout from './pages/Checkout';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   const { cart } = useContext(CartContext);
-  const { error } = useContext(ErrorContext);
   const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   return (
@@ -22,14 +20,6 @@ function App() {
           <Link className="btn btn-outline-primary" to="/checkout">Cart ({itemCount})</Link>
         </div>
       </nav>
-      {error && (
-        <div className="alert alert-danger" role="alert">
-          <p>Error: {error.message}</p>
-          {process.env.NODE_ENV === 'development' && error.stack && (
-            <pre>{error.stack}</pre>
-          )}
-        </div>
-      )}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/checkout" element={<Checkout />} />

@@ -19,7 +19,17 @@ const Home = () => {
   const { loading, error, data } = useQuery(GET_INVENTORY);
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
+  if (error) {
+    return (
+      <p>
+        Error :(
+        {process.env.NODE_ENV === 'development' && (
+          <pre>{error.message}
+{error.stack}</pre>
+        )}
+      </p>
+    );
+  }
 
   return (
     <div className="container mt-5">
