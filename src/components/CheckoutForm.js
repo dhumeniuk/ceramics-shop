@@ -5,8 +5,8 @@ import { CartContext } from '../context/CartContext';
 import { useMutation, gql } from '@apollo/client';
 
 const CREATE_PAYMENT_INTENT = gql`
-  mutation CreatePaymentIntent($amount: Int!, $currency: String!) {
-    createPaymentIntent(amount: $amount, currency: $currency) {
+  mutation CreatePaymentIntent($items: [ItemInput!]!, $shipping: String!) {
+    createPaymentIntent(items: $items, shipping: $shipping) {
       clientSecret
     }
   }
@@ -31,7 +31,7 @@ const CheckoutForm = () => {
 
     try {
       const { data } = await createPaymentIntent({
-        variables: { amount: amountInCents, currency: 'usd' },
+        variables: { items: cart.map(item => ({ id: item.id, quantity: item.quantity })), shipping },
       });
 
       const clientSecret = data.createPaymentIntent.clientSecret;
