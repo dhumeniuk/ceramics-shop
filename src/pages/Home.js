@@ -1,36 +1,30 @@
 
 import React from 'react';
+import { useQuery, gql } from '@apollo/client';
 import Product from '../components/Product';
 
-const products = [
-  {
-    id: 1,
-    name: 'Ceramic Mug',
-    price: 25,
-    inventory: 10,
-    image: 'https://placehold.co/600x400',
-  },
-  {
-    id: 2,
-    name: 'Ceramic Bowl',
-    price: 35,
-    inventory: 5,
-    image: 'https://placehold.co/600x400',
-  },
-  {
-    id: 3,
-    name: 'Ceramic Plate',
-    price: 45,
-    inventory: 0,
-    image: 'https://placehold.co/600x400',
-  },
-];
+const GET_INVENTORY = gql`
+  query GetInventory {
+    inventory {
+      id
+      name
+      inventory
+      image
+      price
+    }
+  }
+`;
 
 const Home = () => {
+  const { loading, error, data } = useQuery(GET_INVENTORY);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
+
   return (
     <div className="container mt-5">
       <div className="row">
-        {products.map((product) => (
+        {data.inventory.map((product) => (
           <Product key={product.id} product={product} />
         ))}
       </div>
