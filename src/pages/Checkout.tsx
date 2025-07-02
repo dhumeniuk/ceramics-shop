@@ -7,7 +7,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import CheckoutForm from '../components/CheckoutForm';
 
 // Replace with your own Stripe publishable key
-const stripePromise = loadStripe('pk_test_YOUR_PUBLISHABLE_KEY');
+const stripePromise = loadStripe('pk_test_51Rfug0KOT1Mpc3IknbvXGB5GMjvMWtMKNhuHe2ouZsBlNVJNIZNwQzkp24gNlaTMcQurlXE5SWjCm5RxT4IJTLCH00Q11zJ54c');
 
 const Checkout: React.FC = () => {
   const cartContext = useContext(CartContext);
@@ -18,15 +18,22 @@ const Checkout: React.FC = () => {
   
   const { cart } = cartContext;
   const [shipping, setShipping] = useState<'pickup' | 'delivery'>('pickup');
+  const [paymentSucceeded, setPaymentSucceeded] = useState(false);
 
   const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
   const shippingFee = shipping === 'delivery' ? 20 : 0;
   const totalPrice = subtotal + shippingFee;
 
+  const handlePaymentSuccess = () => {
+    setPaymentSucceeded(true);
+  };
+
   return (
     <div className="container mt-5">
       <h2>Checkout</h2>
-      {cart.length === 0 ? (
+      {paymentSucceeded ? (
+        <div className="alert alert-success mt-3">Payment successful!</div>
+      ) : cart.length === 0 ? (
         <p>Your cart is empty</p>
       ) : (
         <>
@@ -76,7 +83,7 @@ const Checkout: React.FC = () => {
           <div className="row mt-5">
             <div className="col-md-6">
               <Elements stripe={stripePromise}>
-                <CheckoutForm shipping={shipping} />
+                <CheckoutForm shipping={shipping} onPaymentSuccess={handlePaymentSuccess} />
               </Elements>
             </div>
           </div>

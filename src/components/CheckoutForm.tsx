@@ -12,7 +12,7 @@ const CREATE_PAYMENT_INTENT = gql`
   }
 `;
 
-const CheckoutForm = ({ shipping }: { shipping: string }) => {
+const CheckoutForm = ({ shipping, onPaymentSuccess }: { shipping: string, onPaymentSuccess: () => void }) => {
   const stripe = useStripe();
   const elements = useElements();
   const cartContext = useContext(CartContext);
@@ -65,7 +65,7 @@ const CheckoutForm = ({ shipping }: { shipping: string }) => {
           setError('An unknown error occurred.');
         }
       } else if (paymentIntent.status === 'succeeded') {
-        setSucceeded(true);
+        onPaymentSuccess();
         clearCart();
       } else {
         setError('Payment failed: ' + paymentIntent.status);
@@ -80,11 +80,10 @@ const CheckoutForm = ({ shipping }: { shipping: string }) => {
   return (
     <form onSubmit={handleSubmit}>
       <CardElement />
-      <button disabled={processing || succeeded} className="btn btn-primary mt-3">
+      <button disabled={processing} className="btn btn-primary mt-3">
         {processing ? 'Processing...' : 'Pay'}
       </button>
       {error && <div className="alert alert-danger mt-3">{error}</div>}
-      {succeeded && <div className="alert alert-success mt-3">Payment successful!</div>}
     </form>
   );
 };
