@@ -9,9 +9,15 @@ import CheckoutForm from '../components/CheckoutForm';
 // Replace with your own Stripe publishable key
 const stripePromise = loadStripe('pk_test_YOUR_PUBLISHABLE_KEY');
 
-const Checkout = () => {
-  const { cart } = useContext(CartContext);
-  const [shipping, setShipping] = useState('pickup');
+const Checkout: React.FC = () => {
+  const cartContext = useContext(CartContext);
+  
+  if (!cartContext) {
+    throw new Error('Checkout must be used within CartProvider');
+  }
+  
+  const { cart } = cartContext;
+  const [shipping, setShipping] = useState<'pickup' | 'delivery'>('pickup');
 
   const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
   const shippingFee = shipping === 'delivery' ? 20 : 0;
@@ -70,7 +76,7 @@ const Checkout = () => {
           <div className="row mt-5">
             <div className="col-md-6">
               <Elements stripe={stripePromise}>
-                <CheckoutForm />
+                <CheckoutForm shipping={shipping} />
               </Elements>
             </div>
           </div>

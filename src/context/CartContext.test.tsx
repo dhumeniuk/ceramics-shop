@@ -4,12 +4,18 @@ import userEvent from '@testing-library/user-event';
 import { CartProvider, CartContext } from './CartContext';
 
 const TestComponent = () => {
-  const { cart, addToCart, removeFromCart, updateQuantity } = React.useContext(CartContext);
+  const cartContext = React.useContext(CartContext);
+
+  if (!cartContext) {
+    throw new Error('TestComponent must be used within a CartProvider');
+  }
+
+  const { cart, addToCart, removeFromCart, updateQuantity } = cartContext;
 
   return (
     <div>
       <div data-testid="cart-items">{JSON.stringify(cart)}</div>
-      <button onClick={() => addToCart({ id: '1', name: 'Test Product', price: 10 })}>Add Product 1</button>
+      <button onClick={() => addToCart({ id: '1', name: 'Test Product', price: 10, image: 'test.jpg', inventory: 10 })}>Add Product 1</button>
       <button onClick={() => removeFromCart('1')}>Remove Product 1</button>
       <button onClick={() => updateQuantity('1', 5)}>Update Product 1 Quantity</button>
     </div>

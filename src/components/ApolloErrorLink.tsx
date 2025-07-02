@@ -3,8 +3,14 @@ import { ApolloClient, InMemoryCache, HttpLink, ApolloProvider, ApolloLink } fro
 import { onError } from '@apollo/client/link/error';
 import { ErrorContext } from '../context/ErrorContext';
 
-export const ApolloErrorLink = ({ children }) => {
-  const { setError } = useContext(ErrorContext);
+export const ApolloErrorLink = ({ children }: { children: React.ReactNode }) => {
+  const errorContext = useContext(ErrorContext);
+
+  if (!errorContext) {
+    throw new Error('ApolloErrorLink must be used within an ErrorProvider');
+  }
+
+  const { setError } = errorContext;
 
   const client = useMemo(() => {
     const httpLink = new HttpLink({
@@ -14,7 +20,7 @@ export const ApolloErrorLink = ({ children }) => {
     const errorLink = onError(({ graphQLErrors, networkError }) => {
       if (graphQLErrors) {
         graphQLErrors.forEach((error) => {
-          setError(error);
+          setError(new Error(error.message));
           console.error(
             `[GraphQL error]: Message: ${error.message}, Location: ${error.locations}, Path: ${error.path}`,
           );

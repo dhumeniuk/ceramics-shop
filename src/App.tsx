@@ -7,8 +7,15 @@ import Checkout from './pages/Checkout';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
-  const { cart } = useContext(CartContext);
-  const { error } = useContext(ErrorContext);
+  const cartContext = useContext(CartContext);
+  const errorContext = useContext(ErrorContext);
+  
+  if (!cartContext || !errorContext) {
+    throw new Error('App must be wrapped with CartProvider and ErrorProvider');
+  }
+  
+  const { cart } = cartContext;
+  const { error } = errorContext;
   const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   return (

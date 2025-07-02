@@ -1,9 +1,20 @@
 
 import React, { useContext } from 'react';
 import { CartContext } from '../context/CartContext';
+import { Product as ProductType } from '../types';
 
-const Product = ({ product }) => {
-  const { addToCart } = useContext(CartContext);
+interface ProductProps {
+  product: ProductType;
+}
+
+const Product: React.FC<ProductProps> = ({ product }) => {
+  const cartContext = useContext(CartContext);
+  
+  if (!cartContext) {
+    throw new Error('Product must be used within CartProvider');
+  }
+  
+  const { addToCart } = cartContext;
 
   return (
     <div className="col-md-4 mb-4">

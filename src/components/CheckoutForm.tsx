@@ -12,22 +12,38 @@ const CREATE_PAYMENT_INTENT = gql`
   }
 `;
 
-const CheckoutForm = () => {
+const CheckoutForm = ({ shipping }: { shipping: string }) => {
   const stripe = useStripe();
   const elements = useElements();
-  const { cart, clearCart } = useContext(CartContext);
-  const [error, setError] = useState(null);
+  const cartContext = useContext(CartContext);
+
+  if (!cartContext) {
+    throw new Error('CheckoutForm must be used within a CartProvider');
+  }
+
+  const { cart, clearCart } = cartContext;
+  const [error, setError] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
   const [succeeded, setSucceeded] = useState(false);
 
   const [createPaymentIntent] = useMutation(CREATE_PAYMENT_INTENT);
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setProcessing(true);
 
-    const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
-    const amountInCents = Math.round(subtotal * 100); // Stripe expects amount in cents
+    if (!stripe || !elements) {
+      // Stripe.js has not yet loaded.
+      // Make sure to disable form submission until Stripe.js has loaded.
+      return;
+    }
+
+    const cardElement = elements.getElement(CardElement);
+
+    if (!cardElement) {
+      console.error("CardElement not found");
+      return;
+    }
 
     try {
       const { data } = await createPaymentIntent({
@@ -38,19 +54,23 @@ const CheckoutForm = () => {
 
       const { paymentIntent, error: confirmError } = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
-          card: elements.getElement(CardElement),
+          card: cardElement,
         },
       });
 
       if (confirmError) {
-        setError(confirmError.message);
+        if (confirmError.message) {
+          setError(confirmError.message);
+        } else {
+          setError('An unknown error occurred.');
+        }
       } else if (paymentIntent.status === 'succeeded') {
         setSucceeded(true);
         clearCart();
       } else {
         setError('Payment failed: ' + paymentIntent.status);
       }
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message);
     }
 

@@ -2,6 +2,7 @@
 import React from 'react';
 import { useQuery, gql } from '@apollo/client';
 import Product from '../components/Product';
+import { Product as ProductType } from '../types';
 
 const GET_INVENTORY = gql`
   query GetInventory {
@@ -24,7 +25,7 @@ const Home = () => {
   return (
     <div className="container mt-5">
       <div className="row">
-        {data.inventory.map((product) => (
+        {data.inventory.map((product: ProductType) => (
           <Product key={product.id} product={product} />
         ))}
       </div>

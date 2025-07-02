@@ -1,9 +1,14 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, ReactNode } from 'react';
+import { ErrorContextType } from '../types';
 
-export const ErrorContext = createContext();
+export const ErrorContext = createContext<ErrorContextType | undefined>(undefined);
 
-export const ErrorProvider = ({ children }) => {
-  const [error, setError] = useState(null);
+interface ErrorProviderProps {
+  children: ReactNode;
+}
+
+export const ErrorProvider: React.FC<ErrorProviderProps> = ({ children }) => {
+  const [error, setError] = useState<Error | null>(null);
 
   const clearError = () => setError(null);
 

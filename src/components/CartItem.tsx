@@ -1,9 +1,20 @@
 
 import React, { useContext } from 'react';
 import { CartContext } from '../context/CartContext';
+import { CartItem as CartItemType } from '../types';
 
-const CartItem = ({ item }) => {
-  const { removeFromCart, updateQuantity } = useContext(CartContext);
+interface CartItemProps {
+  item: CartItemType;
+}
+
+const CartItem: React.FC<CartItemProps> = ({ item }) => {
+  const cartContext = useContext(CartContext);
+  
+  if (!cartContext) {
+    throw new Error('CartItem must be used within CartProvider');
+  }
+  
+  const { removeFromCart, updateQuantity } = cartContext;
 
   return (
     <div className="row mb-3">
